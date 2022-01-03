@@ -1,6 +1,8 @@
 # Author: Mathieu Blondel
 # License: BSD 3 clause
 
+import warnings
+
 from ._stochastic_gradient import BaseSGDClassifier
 
 
@@ -64,6 +66,9 @@ class Perceptron(BaseSGDClassifier):
         ``True``. Pass an int for reproducible output across multiple
         function calls.
         See :term:`Glossary <random_state>`.
+
+        .. versionchanged:: 1.0.3
+            Default will change from 0 to None in 1.3.
 
     early_stopping : bool, default=False
         Whether to use early stopping to terminate training when validation.
@@ -177,13 +182,19 @@ class Perceptron(BaseSGDClassifier):
         verbose=0,
         eta0=1.0,
         n_jobs=None,
-        random_state=0,
+        random_state='warn',
         early_stopping=False,
         validation_fraction=0.1,
         n_iter_no_change=5,
         class_weight=None,
         warm_start=False,
     ):
+        if random_state == 'warn':
+            random_state = 0
+            warnings.warn("The default value of random_state will change "
+                          "from 0 to None in 1.3. Specify the random_state "
+                          "option to silence this warning.", FutureWarning)
+
         super().__init__(
             loss="perceptron",
             penalty=penalty,
